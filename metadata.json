@@ -1,0 +1,8 @@
+{
+  "name": "The FarmGrill",
+  "description": "Website for The FarmGrill, a rustic eatery in Eldoret offering delicious burgers and grilled favorites.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
