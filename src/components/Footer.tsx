@@ -1,18 +1,7 @@
 import { motion } from 'motion/react';
-import type { MouseEvent } from 'react';
+import { scrollToElement } from '../utils/scroll';
 
 export function Footer() {
-  const handleScrollTo = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    if (href === '#' || !href) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <footer className="relative z-10 px-12 py-16 border-t border-white/5 bg-transparent">
@@ -35,12 +24,12 @@ export function Footer() {
         <div className="flex flex-col items-center md:items-start">
           <span className="text-[9px] uppercase tracking-widest text-stone-600 mb-6 font-sans">Quick Links</span>
           <nav className="flex flex-col gap-3 font-sans text-xs opacity-60">
-            <a href="#" onClick={(e) => handleScrollTo(e, '#')} className="hover:opacity-100 transition-opacity">Home</a>
-            <a href="#about" onClick={(e) => handleScrollTo(e, '#about')} className="hover:opacity-100 transition-opacity">About</a>
-            <a href="#menu" onClick={(e) => handleScrollTo(e, '#menu')} className="hover:opacity-100 transition-opacity">Menu</a>
-            <a href="#reservation" onClick={(e) => handleScrollTo(e, '#reservation')} className="hover:opacity-100 transition-opacity">Reserve Table</a>
-            <a href="#gallery" onClick={(e) => handleScrollTo(e, '#gallery')} className="hover:opacity-100 transition-opacity">Gallery</a>
-            <a href="#faq" onClick={(e) => handleScrollTo(e, '#faq')} className="hover:opacity-100 transition-opacity">FAQ</a>
+            <a href="#" onClick={(e) => scrollToElement(e, '#')} className="hover:opacity-100 transition-opacity">Home</a>
+            <a href="#about" onClick={(e) => scrollToElement(e, '#about')} className="hover:opacity-100 transition-opacity">About</a>
+            <a href="#menu" onClick={(e) => scrollToElement(e, '#menu')} className="hover:opacity-100 transition-opacity">Menu</a>
+            <a href="#reservation" onClick={(e) => scrollToElement(e, '#reservation')} className="hover:opacity-100 transition-opacity">Reserve Table</a>
+            <a href="#gallery" onClick={(e) => scrollToElement(e, '#gallery')} className="hover:opacity-100 transition-opacity">Gallery</a>
+            <a href="#faq" onClick={(e) => scrollToElement(e, '#faq')} className="hover:opacity-100 transition-opacity">FAQ</a>
           </nav>
         </div>
 

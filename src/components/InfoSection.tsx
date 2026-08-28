@@ -1,9 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Clock, MapPin, Phone, Star, ChefHat, Sparkles, Award, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export function InfoSection() {
   const [isChefModalOpen, setIsChefModalOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Focus trap and Escape key for chef modal
+  useEffect(() => {
+    if (!isChefModalOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsChefModalOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    // Focus the modal on open
+    modalRef.current?.focus();
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isChefModalOpen]);
 
   return (
     <motion.section 
@@ -109,7 +122,7 @@ export function InfoSection() {
                 <Star size={14} fill="currentColor" strokeWidth={0} />
                 <Star size={14} fill="currentColor" strokeWidth={0} />
               </div>
-              <p className="italic text-stone-300 font-serif leading-relaxed">"Seriously good food at a greta price."</p>
+              <p className="italic text-stone-300 font-serif leading-relaxed">"Seriously good food at a great price."</p>
               <p className="text-[10px] text-amber-500/60 font-sans uppercase tracking-[0.2em] mt-4">— Google Review</p>
             </div>
 
@@ -123,17 +136,20 @@ export function InfoSection() {
             <img 
               src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=2070&auto=format&fit=crop" 
               alt="Restaurant entrance" 
+              loading="lazy"
               className="w-full h-full object-cover rounded-tl-[4rem] rounded-br-[4rem] shadow-lg opacity-80 mix-blend-overlay"
             />
             <div className="grid grid-rows-2 gap-4">
               <img 
                 src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?q=80&w=2070&auto=format&fit=crop" 
                 alt="Chicken and rice bowl" 
+                loading="lazy"
                 className="w-full h-full object-cover rounded-tr-[4rem] shadow-lg opacity-80 mix-blend-overlay"
               />
               <img 
                 src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop" 
                 alt="Fresh salad side" 
+                loading="lazy"
                 className="w-full h-full object-cover rounded-bl-[4rem] shadow-lg opacity-80 mix-blend-overlay"
               />
             </div>
@@ -161,7 +177,12 @@ export function InfoSection() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: "spring", duration: 0.5 }}
-              className="relative w-full max-w-2xl bg-[#0f0f0f] border border-amber-500/30 p-6 sm:p-8 md:p-10 shadow-2xl z-10 my-8 overflow-hidden"
+              ref={modalRef}
+              tabIndex={-1}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Meet Our Culinary Team"
+              className="relative w-full max-w-2xl bg-[#0f0f0f] border border-amber-500/30 p-6 sm:p-8 md:p-10 shadow-2xl z-10 my-8 overflow-hidden outline-none"
             >
               <button
                 type="button"

@@ -1,14 +1,7 @@
 import { motion } from 'motion/react';
-import type { MouseEvent } from 'react';
+import { scrollToElement } from '../utils/scroll';
 
 export function Hero() {
-  const handleScrollTo = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <section id="about" className="relative h-screen min-h-[600px] flex items-center justify-center pt-24 border-b border-white/5">
@@ -43,14 +36,14 @@ export function Hero() {
         <div className="flex flex-col sm:flex-row items-center gap-6">
           <a 
             href="#menu" 
-            onClick={(e) => handleScrollTo(e, '#menu')}
+            onClick={(e) => scrollToElement(e, '#menu')}
             className="px-8 py-4 bg-amber-600/20 border border-amber-500/30 text-amber-200 text-xs uppercase tracking-widest hover:bg-amber-600/30 transition-all font-sans min-w-[200px]"
           >
             View Menu
           </a>
           <a 
             href="#location" 
-            onClick={(e) => handleScrollTo(e, '#location')}
+            onClick={(e) => scrollToElement(e, '#location')}
             className="px-8 py-4 border border-white/10 text-stone-300 text-xs uppercase tracking-widest hover:bg-white/5 transition-all flex items-center justify-center text-center font-sans min-w-[200px]"
           >
             Find Us
