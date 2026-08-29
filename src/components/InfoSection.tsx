@@ -5,17 +5,29 @@ import { motion, AnimatePresence } from 'motion/react';
 export function InfoSection() {
   const [isChefModalOpen, setIsChefModalOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+
+  const closeChefModal = () => {
+    setIsChefModalOpen(false);
+    triggerRef.current?.focus();
+  };
 
   // Focus trap and Escape key for chef modal
   useEffect(() => {
     if (!isChefModalOpen) return;
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setIsChefModalOpen(false);
+      if (e.key === 'Escape') closeChefModal();
     };
     document.addEventListener('keydown', handleEscape);
     // Focus the modal on open
     modalRef.current?.focus();
-    return () => document.removeEventListener('keydown', handleEscape);
+    // Prevent background scroll while modal is open
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = originalOverflow;
+    };
   }, [isChefModalOpen]);
 
   return (
@@ -33,7 +45,7 @@ export function InfoSection() {
         }
       }}
     >
-      <div className="max-w-7xl mx-auto px-12">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
           {/* Info Details */}
@@ -102,6 +114,7 @@ export function InfoSection() {
                   Bringing over 15 years of open-flame grilling passion and farm-fresh Kenyan ingredients to your table.
                 </p>
                 <button
+                  ref={triggerRef}
                   type="button"
                   onClick={() => setIsChefModalOpen(true)}
                   className="mt-3 inline-flex items-center gap-2 text-xs uppercase tracking-widest text-amber-400 hover:text-amber-300 font-sans transition-colors group-hover:translate-x-1 duration-300 cursor-pointer"
@@ -129,7 +142,7 @@ export function InfoSection() {
           </motion.div>
 
           {/* Picture Grid Layout */}
-          <motion.div className="grid grid-cols-2 gap-4 h-[600px]" variants={{
+          <motion.div className="grid grid-cols-2 gap-4 h-[380px] sm:h-[480px] lg:h-[600px]" variants={{
             hidden: { opacity: 0, x: 20 },
             visible: { opacity: 1, x: 0, transition: { duration: 0.7, ease: "easeOut" } }
           }}>
@@ -167,7 +180,7 @@ export function InfoSection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsChefModalOpen(false)}
+              onClick={closeChefModal}
               className="fixed inset-0 bg-black/80 backdrop-blur-md"
             />
 
@@ -186,7 +199,7 @@ export function InfoSection() {
             >
               <button
                 type="button"
-                onClick={() => setIsChefModalOpen(false)}
+                onClick={closeChefModal}
                 className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2 text-stone-400 hover:text-white border border-white/10 hover:border-amber-500/50 rounded-full transition-colors bg-[#181818] cursor-pointer"
                 aria-label="Close Modal"
               >
@@ -253,7 +266,7 @@ export function InfoSection() {
               <div className="mt-8 pt-4 border-t border-white/10 flex justify-end">
                 <button
                   type="button"
-                  onClick={() => setIsChefModalOpen(false)}
+                  onClick={closeChefModal}
                   className="px-6 py-3 bg-amber-600/20 border border-amber-500/40 text-amber-200 text-xs uppercase tracking-widest hover:bg-amber-600/30 transition-all font-sans cursor-pointer"
                 >
                   Close

@@ -29,6 +29,7 @@ export default function App() {
         <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[80%] rounded-full bg-orange-900/10 blur-[120px]"></div>
         <div className="absolute bottom-[-10%] right-[-5%] w-[50%] h-[70%] rounded-full bg-amber-900/10 blur-[100px]"></div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-stone-800/10 to-transparent opacity-50"></div>
+        <div className="grain-overlay absolute inset-0 opacity-[0.035] mix-blend-overlay" aria-hidden="true"></div>
       </div>
 
       {/* Global Shadow Overlay for Mood */}

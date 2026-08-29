@@ -1,53 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { menuCategories, formatPrice } from '../data/menu';
 
 export function Menu() {
   const [activeCategory, setActiveCategory] = useState("All");
-
-  const menuCategories = [
-    {
-      id: "Burgers",
-      title: "Signature Burgers",
-      description: "Served on our signature wooden boards with flame-kissed patties.",
-      items: [
-        { name: "Sains Classic", price: "KSh 850", desc: "Beef patty, crisp lettuce, tomato, caramelized onions, cheddar cheese." },
-        { name: "Rustic BBQ Bacon", price: "KSh 950", desc: "Beef patty, smoked bacon, onion rings, BBQ sauce, american cheese." },
-        { name: "Spicy Chicken Burger", price: "KSh 800", desc: "Grilled chicken breast, spicy mayo, jalapeños, lettuce, pickles." },
-        { name: "The Wooden Board Combo", price: "KSh 1,200", desc: "Classic burger paired with sticky BBQ short ribs and crispy fries." },
-      ]
-    },
-    {
-      id: "Grilled",
-      title: "Flame-Grilled & Mains",
-      description: "Aromatic charcoal grilled cuts, ribs, and farm-fresh hearty meals.",
-      items: [
-        { name: "BBQ Short Ribs", price: "KSh 1,800", desc: "Slow-cooked ribs glazed in farm BBQ sauce. Served with fries." },
-        { name: "Flame-Grilled Ribeye", price: "KSh 2,500", desc: "Prime steak cooked over open fire with garlic herb butter and side." },
-        { name: "Sains Chicken & Rice", price: "KSh 1,200", desc: "Flavorful grilled chicken served over fragrant rice with a fresh side salad." },
-      ]
-    },
-    {
-      id: "Sides",
-      title: "Sides & Extras",
-      description: "The perfect golden companions for your meal.",
-      items: [
-        { name: "Farmhouse Fries", price: "KSh 250", desc: "Crispy golden french fries served in our signature metal cups." },
-        { name: "Loaded Cheese Fries", price: "KSh 450", desc: "Fries smothered in melted cheese, bacon bits, and spring onions." },
-        { name: "Fresh Garden Salad", price: "KSh 350", desc: "Mixed greens, cherry tomatoes, cucumbers, house vinaigrette." },
-      ]
-    },
-    {
-      id: "Drinks",
-      title: "Drinks & Beverages",
-      description: "Refreshing cold beverages, juices, milkshakes, and tap beers.",
-      items: [
-        { name: "Freshly Squeezed Juices", price: "KSh 300", desc: "Orange, passion, or mango made to order." },
-        { name: "Craft Milkshakes", price: "KSh 450", desc: "Vanilla bean, double chocolate, or strawberry." },
-        { name: "Local Sodas", price: "KSh 150", desc: "Assorted carbonated soft drinks." },
-        { name: "Cold Draft Beer", price: "KSh 350", desc: "Crisp and cold, poured fresh from the tap." },
-      ]
-    }
-  ];
 
   const filterCategories = ["All", "Burgers", "Grilled", "Drinks", "Sides"];
 
@@ -70,7 +26,7 @@ export function Menu() {
         }
       }}
     >
-      <div className="max-w-6xl mx-auto px-12">
+      <div className="max-w-6xl mx-auto px-6 sm:px-8 lg:px-12">
         <motion.div className="text-center mb-16" variants={{
           hidden: { opacity: 0, y: 20 },
           visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
@@ -81,12 +37,13 @@ export function Menu() {
           <h2 className="font-serif text-4xl md:text-5xl font-light italic text-stone-100 mb-6">Our Menu</h2>
           <div className="w-12 h-[1px] bg-amber-500/40 mx-auto mb-10"></div>
           
-          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-2">
+          <div className="flex flex-wrap justify-center gap-3 md:gap-4 mb-2" role="group" aria-label="Filter menu by category">
             {filterCategories.map(cat => (
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-6 py-2 text-xs uppercase tracking-widest font-sans transition-all duration-300 border ${
+                aria-pressed={activeCategory === cat}
+                className={`px-6 py-2 text-xs uppercase tracking-widest font-sans transition-all duration-300 border cursor-pointer ${
                   activeCategory === cat
                     ? 'border-amber-500/50 text-amber-400 bg-amber-500/10'
                     : 'border-white/10 text-stone-400 hover:border-white/30 hover:text-stone-200 bg-transparent'
@@ -135,13 +92,13 @@ export function Menu() {
                       }}
                       transition={{ type: "spring", stiffness: 400, damping: 25 }}
                     >
-                      <div className="flex justify-between items-baseline mb-2">
+                      <div className="flex justify-between items-baseline mb-2 gap-2">
                         <h4 className="text-lg text-stone-200 group-hover:text-amber-400 transition-colors">{item.name}</h4>
                         <div className="flex-grow border-b border-white/5 mx-4 relative top-[-6px]"></div>
-                        <span className="text-amber-500/80 font-sans text-sm uppercase tracking-widest">{item.price}</span>
+                        <span className="text-amber-500/80 font-sans text-sm uppercase tracking-widest whitespace-nowrap">{formatPrice(item.price)}</span>
                       </div>
                       <p className="text-xs text-stone-500 font-sans leading-tight italic text-left">
-                        {item.desc}
+                        {item.description}
                       </p>
                     </motion.div>
                   ))}

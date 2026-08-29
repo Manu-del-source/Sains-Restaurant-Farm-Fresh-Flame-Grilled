@@ -6,11 +6,14 @@ import { scrollToElement } from '../utils/scroll';
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
       const sections = ['about', 'menu', 'reservation', 'gallery', 'faq'];
       const scrollPosition = window.scrollY + 200; // Offset for header height
+
+      setIsScrolled(window.scrollY > 24);
 
       let current = '';
       for (const section of sections) {
@@ -33,6 +36,16 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu with Escape
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isMobileMenuOpen]);
+
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     setIsMobileMenuOpen(false);
     scrollToElement(e, href);
@@ -47,9 +60,11 @@ export function Header() {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-[#080808]/80 text-stone-200 backdrop-blur-md border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-24 flex items-center justify-between">
-        <a href="#" onClick={(e) => handleNavClick(e, '#')} className="font-serif text-2xl tracking-[0.2em] font-light uppercase flex items-center gap-2">
+    <header className={`fixed top-0 left-0 right-0 z-50 text-stone-200 backdrop-blur-md transition-colors duration-300 ${
+      isScrolled ? 'bg-[#080808]/95 border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.3)]' : 'bg-[#080808]/70 border-b border-white/5'
+    }`}>
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 h-20 md:h-24 flex items-center justify-between">
+        <a href="#" onClick={(e) => handleNavClick(e, '#')} className="font-serif text-xl md:text-2xl tracking-[0.2em] font-light uppercase flex items-center gap-2">
           Sains Restaurant
         </a>
         
@@ -89,7 +104,10 @@ export function Header() {
           <div className="hidden lg:block w-12 h-[1px] bg-amber-500/40"></div>
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-stone-300 hover:text-white opacity-80 hover:opacity-100 transition-opacity z-50"
+            aria-expanded={isMobileMenuOpen}
+            aria-controls="mobile-nav-menu"
+            aria-label={isMobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            className="md:hidden p-2.5 -mr-2.5 text-stone-300 hover:text-white opacity-80 hover:opacity-100 transition-opacity z-50"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -100,10 +118,11 @@ export function Header() {
         {isMobileMenuOpen && (
           <motion.div
             key="mobileMenu"
+            id="mobile-nav-menu"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="absolute top-24 left-0 right-0 bg-[#080808]/95 backdrop-blur-xl border-b border-white/5 p-6 flex flex-col shadow-2xl md:hidden"
+            className="absolute top-20 md:top-24 left-0 right-0 bg-[#080808]/95 backdrop-blur-xl border-b border-white/5 p-6 flex flex-col shadow-2xl md:hidden"
           >
             <nav className="flex flex-col gap-6 text-sm uppercase tracking-[0.3em] font-sans text-center py-4">
               {navItems.map((item) => (

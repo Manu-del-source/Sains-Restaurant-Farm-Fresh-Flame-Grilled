@@ -50,7 +50,10 @@ export function FAQ() {
             >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-colors duration-300 group"
+                aria-expanded={openIndex === index}
+                aria-controls={`faq-answer-${index}`}
+                id={`faq-question-${index}`}
+                className="w-full flex items-center justify-between p-6 text-left hover:bg-white/5 transition-colors duration-300 group cursor-pointer"
               >
                 <span className={`font-serif text-lg tracking-wide transition-colors ${openIndex === index ? 'text-amber-400' : 'text-stone-200 group-hover:text-amber-400'}`}>
                   {faq.question}
@@ -67,6 +70,9 @@ export function FAQ() {
                 {openIndex === index && (
                   <motion.div
                     key="content"
+                    id={`faq-answer-${index}`}
+                    role="region"
+                    aria-labelledby={`faq-question-${index}`}
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}

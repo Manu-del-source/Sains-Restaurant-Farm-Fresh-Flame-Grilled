@@ -18,6 +18,7 @@ export function Chatbot() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -26,6 +27,20 @@ export function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isLoading]);
+
+  // Focus the input when the chat opens, close on Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const timer = setTimeout(() => inputRef.current?.focus(), 250);
+    const handleEscape = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -93,6 +108,9 @@ export function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-modal="false"
+            aria-label="Sains Restaurant chat assistant"
             className="fixed bottom-6 left-6 md:bottom-10 md:left-10 z-50 w-[90vw] sm:w-[380px] h-[500px] max-h-[80vh] flex flex-col bg-[#0f0f0f] border border-stone-800 rounded-xl shadow-2xl overflow-hidden font-sans"
           >
             {/* Header */}
@@ -119,7 +137,7 @@ export function Chatbot() {
             </div>
 
             {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#0a0a0a]">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-[#0a0a0a]" role="log" aria-live="polite" aria-label="Chat messages">
               {messages.map((msg, index) => (
                 <div
                   key={index}
@@ -149,16 +167,20 @@ export function Chatbot() {
             {/* Input Area */}
             <div className="p-3 bg-[#080808] border-t border-stone-800 flex gap-2">
               <input
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
+                enterKeyHint="send"
+                aria-label="Type your message"
                 placeholder="Ask about our menu, hours..."
                 className="flex-1 bg-[#141414] border border-stone-800 rounded-full px-4 py-2 text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:border-amber-500/50 transition-colors"
               />
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
+                aria-label="Send message"
                 className="p-2 rounded-full bg-amber-500/20 text-amber-500 border border-amber-500/50 hover:bg-amber-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Send size={18} className={input.trim() ? "translate-x-0.5" : ""} />

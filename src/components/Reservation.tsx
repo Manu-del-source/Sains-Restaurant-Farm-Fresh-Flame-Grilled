@@ -160,7 +160,9 @@ export function Reservation() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.4 }}
-                className="bg-[#0f0f0f] border border-amber-500/30 p-12 shadow-2xl text-center absolute inset-0 flex flex-col justify-center items-center"
+                role="status"
+                aria-live="polite"
+                className="bg-[#0f0f0f] border border-amber-500/30 p-8 sm:p-12 shadow-2xl text-center absolute inset-0 flex flex-col justify-center items-center"
               >
                 <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-8 relative">
                   <motion.div 
@@ -179,14 +181,19 @@ export function Reservation() {
                 </div>
                 
                 <h3 className="font-serif text-3xl font-light italic text-stone-100 mb-6">
-                  Reservation Confirmed
+                  Request Received
                 </h3>
                 
-                <div className="space-y-3 mb-10 font-sans text-stone-300 text-sm max-w-sm mx-auto bg-[#181818] p-6 rounded-lg border border-white/5">
+                <div className="space-y-3 mb-6 font-sans text-stone-300 text-sm max-w-sm mx-auto bg-[#181818] p-6 rounded-lg border border-white/5">
                   <p>Thank you, <strong className="text-white">{submittedReservation.name}</strong>.</p>
-                  <p>We look forward to hosting your party of <strong className="text-amber-400">{submittedReservation.partySize}</strong>.</p>
-                  <p>See you on <strong className="text-white">{submittedReservation.date}</strong> at <strong className="text-white">{submittedReservation.time}</strong>.</p>
+                  <p>We've noted your request for a party of <strong className="text-amber-400">{submittedReservation.partySize}</strong>.</p>
+                  <p>Preferred time: <strong className="text-white">{submittedReservation.date}</strong> at <strong className="text-white">{submittedReservation.time}</strong>.</p>
                 </div>
+
+                <p className="text-stone-500 font-sans text-xs max-w-sm mx-auto mb-10 leading-relaxed">
+                  This confirms we've received your request &mdash; a member of our team will call or WhatsApp you at{' '}
+                  <strong className="text-stone-300">{submittedReservation.phone}</strong> shortly to finalize your table.
+                </p>
                 
                 <button
                   onClick={handleBookAnother}
@@ -216,6 +223,7 @@ export function Reservation() {
                     <input
                       id="res-name"
                       type="text"
+                      autoComplete="name"
                       value={name}
                       onChange={(e) => {
                         setName(e.target.value);
@@ -242,6 +250,8 @@ export function Reservation() {
                     <input
                       id="res-phone"
                       type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
                       value={phone}
                       onChange={(e) => {
                         setPhone(e.target.value);
@@ -365,6 +375,7 @@ export function Reservation() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
+                  aria-busy={isSubmitting}
                   className="w-full py-4 bg-amber-600/30 border border-amber-500/50 text-amber-200 text-xs uppercase tracking-[0.25em] font-sans font-medium hover:bg-amber-600/40 hover:border-amber-400 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 relative overflow-hidden group"
                 >
                   <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
@@ -372,12 +383,16 @@ export function Reservation() {
                   {isSubmitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-amber-200/30 border-t-amber-200 rounded-full animate-spin"></div>
-                      Processing...
+                      Sending Request...
                     </>
                   ) : (
-                    'Confirm Reservation'
+                    'Send Reservation Request'
                   )}
                 </button>
+
+                <p className="text-center text-[11px] text-stone-500 font-sans mt-4 leading-relaxed">
+                  This sends a request, not a guaranteed table &mdash; our team will call or WhatsApp you to confirm.
+                </p>
               </motion.form>
             )}
           </AnimatePresence>
@@ -390,9 +405,12 @@ export function Reservation() {
             animate={{ opacity: 1 }} 
             className="mt-20 border-t border-white/5 pt-12"
           >
-            <h3 className="font-serif text-2xl font-light italic text-stone-200 mb-8 text-center">
-              Your Bookings ({reservationsList.length})
+            <h3 className="font-serif text-2xl font-light italic text-stone-200 mb-2 text-center">
+              Your Requests ({reservationsList.length})
             </h3>
+            <p className="text-center text-xs text-stone-500 font-sans mb-8">
+              Saved on this device only &mdash; not yet confirmed by the restaurant.
+            </p>
             <div className="space-y-4">
               {reservationsList.map((res) => (
                 <div 
